@@ -70,7 +70,7 @@ object StreamFSM {
 
 }
 
-class ConnectorFSM[Key, Msg](props: AkkaConsumerProps[Key, Msg], connector: ConsumerConnector) extends Actor with FSM[ConnectorState, Int] {
+class ConnectorFSM[Key, Msg](props: AkkaConsumerProps[Key, Msg], connector: ConsumerConnector) extends Actor  with FSM[ConnectorState, Int] {
 
   import props._
   import context.dispatcher
@@ -169,7 +169,7 @@ class ConnectorFSM[Key, Msg](props: AkkaConsumerProps[Key, Msg], connector: Cons
     case Event(d@Drained(stream), drained) if drained + 1 == context.children.size =>
       debugCommit(d, stream, drained + 1)
       log.info("at=drain-finished")
-      connector.commitOffsets
+      connector.commitOffsets(true)
       log.info("at=committed-offsets")
       goto(Receiving) using 0
   }
